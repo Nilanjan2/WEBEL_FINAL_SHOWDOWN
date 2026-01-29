@@ -1,0 +1,13 @@
+pandas
+numpy
+sentence-transformers
+scikit-learn
+pdfplumber
+python-docx
+openpyxl
+fastapi
+uvicorn
+openai
+faiss-cpu
+python-dotenv
+torch

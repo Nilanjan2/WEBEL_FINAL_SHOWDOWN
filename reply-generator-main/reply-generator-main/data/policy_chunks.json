@@ -1,0 +1,34 @@
+[
+  {
+    "text": "Grievances must be submitted within 90 days from the date of occurrence. Grievances submitted after 90 days shall not be entertained unless supported by valid documentary evidence.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Time Limit for Raising Grievances",
+      "clause_id": "4.1"
+    }
+  },
+  {
+    "text": "A grievance submission must include applicant’s full name, registered mobile number and email ID, institution name, detailed description of the grievance, and supporting documents if applicable. Incomplete submissions may be rejected.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Required Information",
+      "clause_id": "4.2"
+    }
+  },
+  {
+    "text": "Scholarship-related grievances shall be resolved within 30 working days.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Resolution Timeline",
+      "clause_id": "5.2-SCH"
+    }
+  },
+  {
+    "text": "A grievance shall be rejected if it falls outside the defined scope, is submitted beyond the 90-day limit without justification, mandatory information is missing, or the matter is sub judice.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Grounds for Rejection",
+      "clause_id": "6.0"
+    }
+  }
+]
