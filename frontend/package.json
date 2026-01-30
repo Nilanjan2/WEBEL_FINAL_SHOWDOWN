@@ -55,5 +55,5 @@
       "scripts": {
       "dev": "npm exec vite",
       "build": "npm exec vite build"
-      }
+      } 
 }
