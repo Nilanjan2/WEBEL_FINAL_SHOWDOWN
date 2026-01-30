@@ -53,7 +53,7 @@
             "vite": "6.3.5"
       },
       "scripts": {
-            "dev": "vite",
-            "build": "vite build"
+      "dev": "npx vite",
+      "build": "npx vite build"
       }
 }
