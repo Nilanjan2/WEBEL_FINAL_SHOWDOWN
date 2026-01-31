@@ -1,3 +1,9 @@
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("VITE_API_URL is not defined");
+}
+
 import { X, Paperclip, User, Mail, Calendar } from 'lucide-react';
 import { Email } from '../types';
 import { getCategoryInfo } from '../data/categories';
@@ -215,7 +221,7 @@ function EmailCard({ email, isParent, isCurrentEmail }: EmailCardProps) {
               return (
                 <a
                   key={index}
-                  href={`http://localhost:8000/download/attachment/${encodeURIComponent(filename)}`}
+                  href={`${API_BASE_URL}/download/attachment/${encodeURIComponent(filename)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 w-fit transition-colors cursor-pointer group"
@@ -227,7 +233,7 @@ function EmailCard({ email, isParent, isCurrentEmail }: EmailCardProps) {
             })
           ) : (
             <a
-              href={`http://localhost:8000/download/email/${email.emlFile}`}
+              href={`${API_BASE_URL}/download/email/${email.emlFile}`}
               download={email.emlFile}
               className="flex items-center gap-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 w-fit transition-colors cursor-pointer group"
             >
