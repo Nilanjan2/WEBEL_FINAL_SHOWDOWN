@@ -46,7 +46,7 @@ export default function App() {
         })));
       } catch (err) {
         console.error('Failed to load data:', err);
-        setError('Failed to load data. Make sure the backend is running on http://localhost:8000');
+        setError('Failed to load data. Backend API is unreachable.');
       } finally {
         setLoading(false);
       }
