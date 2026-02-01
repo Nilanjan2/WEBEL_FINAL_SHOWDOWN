@@ -90,6 +90,13 @@ export async function processEmails(): Promise<void> {
 // Ask chatbot (POST — correct)
 
 export async function askChatbot(question: string): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/chat?q=${encodeURIComponent(question)}`);
+  if (!response.ok) throw new Error('Failed to get chatbot response');
+  const data = await response.json();
+  return data.answer;
+}
+/*
+export async function askChatbot(question: string): Promise<string> {
   const response = await fetch(`${API_BASE_URL}/chat`, {
     method: "POST",
     headers: {
@@ -107,7 +114,7 @@ export async function askChatbot(question: string): Promise<string> {
   // Works even if backend returns { reply } or { answer }
   return data.reply || data.answer || "";
 }
-
+*/
 /* ============================
    COLLEGES API
 ============================ */
