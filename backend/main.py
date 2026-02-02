@@ -177,16 +177,21 @@ def process_emails():
     run()
     return {"status": "emails processed"}
 
-@app.get("/chat")
-def chat(q: str):
-    try:
-        return {"answer": ask(q)}
-    except Exception as e:
-        print(f"Chat error: {e}")
-        import traceback
-        traceback.print_exc()
-        return {"answer": f"Error: {str(e)}"}
-    
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/chat")
+def chat(request: ChatRequest):
+    print("📥 CHAT MESSAGE:", repr(request.message))
+
+    if not request.message or not request.message.strip():
+        raise HTTPException(status_code=400, detail="Empty message")
+
+    answer = ask(request.message)
+
+    print("🤖 CHAT ANSWER:", repr(answer))
+    return {"answer": answer}
+
 @app.get("/dashboard")
 def dashboard():
     if not os.path.exists(EXCEL_FILE):
@@ -268,7 +273,11 @@ def generate_reply(request: GenerateReplyRequest):
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
     import sys
-    
+    import os
+    port = int(os.environ.get("PORT", 7860))
+
+    print(f"🚀 Starting FastAPI on port {port}")
+    uvicorn.run(app, host="0.0.0.0", port=port)
     # If script is run directly, process emails first
     if len(sys.argv) > 1 and sys.argv[1] == "process":
         run()
@@ -280,3 +289,4 @@ if __name__ == "__main__":
         print("📊 API Documentation at: http://localhost:8000/docs")
         print("\nPress Ctrl+C to stop the server\n")
         uvicorn.run(app, host="0.0.0.0", port=8000)
+        
