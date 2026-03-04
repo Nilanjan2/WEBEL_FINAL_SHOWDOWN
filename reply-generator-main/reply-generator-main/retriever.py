@@ -10,19 +10,19 @@ import torch
 from dotenv import load_dotenv
 
 # --------------------------------------------------
-# CONFIGURATION
+# CONFIG
 # --------------------------------------------------
 
 DATA_DIR = "data"
 INDEX_PATH = f"{DATA_DIR}/faiss.index"
 CHUNKS_PATH = f"{DATA_DIR}/policy_chunks.json"
 
-TOP_K = 5                 # Retrieve top 5, use top 3 finally
+TOP_K = 5
 LLM_MODEL = "gpt-4o-mini"
-TEMPERATURE = 0.1
+TEMPERATURE = 0.0   # 🔴 Important for deterministic legal output
 
 # --------------------------------------------------
-# LOAD ENVIRONMENT
+# ENV
 # --------------------------------------------------
 
 load_dotenv()
@@ -34,52 +34,27 @@ if not OPENAI_API_KEY:
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # --------------------------------------------------
-# EMBEDDING MODEL
+# EMBEDDINGS
 # --------------------------------------------------
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 embedder = SentenceTransformer(
-    "multi-qa-mpnet-base-dot-v1",  # Stronger retrieval model
+    "multi-qa-mpnet-base-dot-v1",
     device=device
 )
 
 # --------------------------------------------------
-# LOAD INDEX + POLICY DATA
+# LOAD INDEX + POLICY
 # --------------------------------------------------
-
-if not os.path.exists(INDEX_PATH):
-    raise RuntimeError("FAISS index not found. Run ingest.py first.")
-
-if not os.path.exists(CHUNKS_PATH):
-    raise RuntimeError("policy_chunks.json not found.")
 
 index = faiss.read_index(INDEX_PATH)
 
 with open(CHUNKS_PATH, "r", encoding="utf-8") as f:
     policy_chunks = json.load(f)
 
-if index.ntotal != len(policy_chunks):
-    raise RuntimeError("FAISS index and policy chunks count mismatch")
-
 # --------------------------------------------------
-# SYSTEM PROMPT
-# --------------------------------------------------
-
-SYSTEM_PROMPT = """
-You are a senior grievance redressal officer of the Higher Education Department.
-
-STRICT RULES:
-- You MUST make a clear decision: Accepted / Rejected / Additional Information Required.
-- You MUST cite clause numbers explicitly.
-- You MUST justify your reasoning using only the provided clauses.
-- You MUST NOT give generic replies.
-- You MUST NOT invent rules.
-- Maintain formal government tone.
-"""
-
-# --------------------------------------------------
-# RETRIEVAL FUNCTION
+# RETRIEVAL
 # --------------------------------------------------
 
 def retrieve_policy_chunks(email_text: str):
@@ -105,68 +80,92 @@ def retrieve_policy_chunks(email_text: str):
             "score": float(score)
         })
 
-    # Sort by similarity score
     results = sorted(results, key=lambda x: x["score"], reverse=True)
 
-    # Keep top 3 strongest clauses
     return results[:3]
 
+
 # --------------------------------------------------
-# MAIN REPLY GENERATION
+# MAIN FUNCTION
 # --------------------------------------------------
 
 def generate_policy_reply(email_text: str) -> str:
-
-    if not email_text or len(email_text.strip()) < 10:
-        return (
-            "Subject: Insufficient Information\n\n"
-            "Dear Applicant,\n\n"
-            "Your submission does not contain sufficient details "
-            "for policy examination. Kindly provide complete information.\n\n"
-            "Regards,\n"
-            "Grievance Redressal Cell\n"
-            "Higher Education Department"
-        )
 
     retrieved = retrieve_policy_chunks(email_text)
 
     if not retrieved:
         return (
-            "Subject: Request for Clarification\n\n"
+            "Subject: Clarification Required\n\n"
             "Dear Applicant,\n\n"
-            "Your submission does not contain sufficient information "
-            "to determine the applicable policy provisions. Kindly provide "
-            "complete details including relevant dates and supporting documents.\n\n"
+            "Your submission does not provide sufficient policy-relevant "
+            "information for examination. Kindly provide complete details "
+            "including dates, category, and supporting documents.\n\n"
             "Regards,\n"
             "Grievance Redressal Cell\n"
             "Higher Education Department"
         )
 
-    # Build structured policy context
-    context = ""
+    # Build policy block
+    policy_context = ""
     for c in retrieved:
-        clause = c["metadata"].get("clause_id", "N/A")
-        section = c["metadata"].get("section", "General")
+        clause = c["metadata"]["clause_id"]
+        section = c["metadata"]["section"]
         text = c["text"]
 
-        context += f"\nClause {clause} - {section}:\n{text}\n"
+        policy_context += f"\nClause {clause} - {section}:\n{text}\n"
 
-    user_prompt = f"""
-EMAIL CONTENT:
+    # 🔴 STAGE 1: FORCE STRUCTURED POLICY ANALYSIS
+    analysis_prompt = f"""
+You are a strict legal compliance evaluator.
+
+EMAIL:
 {email_text}
 
-RETRIEVED POLICY CLAUSES:
-{context}
+POLICY CLAUSES:
+{policy_context}
 
 TASK:
+Analyze the email strictly against the clauses.
 
-1. Identify grievance category.
-2. Check compliance with time limits, documentation, and jurisdiction.
-3. Make one clear decision:
-   - Accepted for Review
-   - Rejected
-   - Additional Information Required
-4. Draft structured official reply.
+Return ONLY a JSON object with:
+
+{{
+  "identified_issue": "...",
+  "relevant_clauses": ["clause_id"],
+  "policy_violation": true/false,
+  "reasoning": "...",
+  "final_decision": "Accepted for Review / Rejected / Additional Information Required"
+}}
+
+Do NOT write explanation outside JSON.
+"""
+
+    analysis_response = client.chat.completions.create(
+        model=LLM_MODEL,
+        temperature=TEMPERATURE,
+        messages=[
+            {"role": "system", "content": "You are a legal reasoning engine."},
+            {"role": "user", "content": analysis_prompt}
+        ]
+    )
+
+    analysis_text = analysis_response.choices[0].message.content.strip()
+
+    # 🔴 STAGE 2: FINAL FORMAL REPLY BASED ON ANALYSIS
+    final_prompt = f"""
+You are a senior grievance officer.
+
+EMAIL:
+{email_text}
+
+POLICY ANALYSIS RESULT:
+{analysis_text}
+
+Draft a formal, strong, clause-specific official reply.
+- Cite clauses explicitly.
+- Do not be generic.
+- Make decision firm and clear.
+- Maintain strict administrative tone.
 
 FORMAT:
 
@@ -174,11 +173,11 @@ Subject: Response to Grievance Submission
 
 Dear Applicant,
 
-[Brief summary of issue]
+[Summary of case]
 
-As per Clause [X.X], [policy reasoning].
+[Clause-based reasoning]
 
-Decision: [Clear decision]
+Decision: [Decision]
 
 This decision is issued in accordance with the Official Grievance Policy.
 
@@ -187,26 +186,13 @@ Grievance Redressal Cell
 Higher Education Department
 """
 
-    try:
-        response = client.chat.completions.create(
-            model=LLM_MODEL,
-            temperature=TEMPERATURE,
-            timeout=20,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt}
-            ]
-        )
+    final_response = client.chat.completions.create(
+        model=LLM_MODEL,
+        temperature=TEMPERATURE,
+        messages=[
+            {"role": "system", "content": "You are a strict government officer."},
+            {"role": "user", "content": final_prompt}
+        ]
+    )
 
-        return response.choices[0].message.content.strip()
-
-    except Exception as e:
-        return (
-            "Subject: Temporary Technical Issue\n\n"
-            "Dear Applicant,\n\n"
-            "We are currently experiencing technical difficulties "
-            "in processing your request. Kindly try again later.\n\n"
-            "Regards,\n"
-            "Grievance Redressal Cell\n"
-            "Higher Education Department"
-        )
+    return final_response.choices[0].message.content.strip()
