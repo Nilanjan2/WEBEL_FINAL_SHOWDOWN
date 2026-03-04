@@ -1,34 +1,110 @@
 [
   {
-    "text": "Grievances must be submitted within 90 days from the date of occurrence. Grievances submitted after 90 days shall not be entertained unless supported by valid documentary evidence.",
+    "text": "Suspension-related grievances and disciplinary appeals must strictly follow due process. The concerned student must receive a written notice clearly stating the grounds of suspension. Appeals shall be reviewed by the competent authority within 15 working days from receipt. Interim academic rights shall remain preserved unless the matter involves critical misconduct affecting institutional safety.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Suspension and Disciplinary Matters",
+      "clause_id": "7.1",
+      "intent": "disciplinary_appeal"
+    }
+  },
+  {
+    "text": "Re-evaluation of examination results is permitted only if the application is submitted within 10 days from the date of declaration of results. The evaluation must be conducted by an independent reviewer. Final communication regarding re-evaluation outcomes must be issued within 30 days from receipt of request.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Examination and Semester Issues",
+      "clause_id": "8.1",
+      "intent": "exam_revaluation"
+    }
+  },
+  {
+    "text": "In cases involving FIRs or legal complaints, the institution shall cooperate fully with law enforcement authorities. An internal inquiry committee shall be constituted where necessary. The rights and dignity of all parties must be protected during the investigation process. No conclusion shall be drawn until the legal or internal inquiry process is completed.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "FIR and Legal Complaints",
+      "clause_id": "9.1",
+      "intent": "legal_matter"
+    }
+  },
+  {
+    "text": "All administrative grievances and official queries must be acknowledged within 5 working days from receipt. Resolution shall be provided within 30 days from the date of acknowledgment, subject to the complexity of the matter.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Administrative Delays",
+      "clause_id": "10.1",
+      "intent": "administrative_delay"
+    }
+  },
+  {
+    "text": "All attachments submitted along with a grievance must be reviewed prior to issuing an official response. If required attachments are missing, the applicant must be formally requested to provide them before further processing.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Attachment Handling",
+      "clause_id": "11.1",
+      "intent": "attachment_validation"
+    }
+  },
+  {
+    "text": "Grievances must be submitted within 90 days from the date of occurrence. Submissions beyond 90 days shall not be entertained unless supported by valid documentary justification explaining the delay.",
     "metadata": {
       "policy_id": "HED_GRS",
       "section": "Time Limit for Raising Grievances",
-      "clause_id": "4.1"
+      "clause_id": "4.1",
+      "intent": "time_validation"
     }
   },
   {
-    "text": "A grievance submission must include applicant’s full name, registered mobile number and email ID, institution name, detailed description of the grievance, and supporting documents if applicable. Incomplete submissions may be rejected.",
+    "text": "A grievance submission must include the applicant’s full name, registered mobile number, email ID, institution name, clear description of grievance, and supporting documents wherever applicable. Incomplete submissions may be rejected.",
     "metadata": {
       "policy_id": "HED_GRS",
       "section": "Required Information",
-      "clause_id": "4.2"
+      "clause_id": "4.2",
+      "intent": "mandatory_information"
     }
   },
   {
-    "text": "Scholarship-related grievances shall be resolved within 30 working days.",
+    "text": "Scholarship-related grievances shall be examined and resolved within 30 working days from the date of receipt, subject to completeness of documentation.",
     "metadata": {
       "policy_id": "HED_GRS",
-      "section": "Resolution Timeline",
-      "clause_id": "5.2-SCH"
+      "section": "Scholarship Matters",
+      "clause_id": "5.2-SCH",
+      "intent": "scholarship_timeline"
     }
   },
   {
-    "text": "A grievance shall be rejected if it falls outside the defined scope, is submitted beyond the 90-day limit without justification, mandatory information is missing, or the matter is sub judice.",
+    "text": "A grievance shall be rejected if it falls outside the jurisdiction of the Higher Education Department, lacks mandatory information, exceeds the prescribed time limit without justification, or if the matter is sub judice before any court of law.",
     "metadata": {
       "policy_id": "HED_GRS",
       "section": "Grounds for Rejection",
-      "clause_id": "6.0"
+      "clause_id": "6.0",
+      "intent": "rejection_rules"
+    }
+  },
+  {
+    "text": "The grievance response must maintain a formal and neutral tone. No admission of liability shall be made unless supported by formal findings of a competent authority or inquiry committee.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Response Guidelines",
+      "clause_id": "12.1",
+      "intent": "response_protocol"
+    }
+  },
+  {
+    "text": "Where additional clarification is required, the applicant shall be formally requested to furnish supplementary information within a reasonable time frame. Processing may remain pending until required details are received.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Information Clarification",
+      "clause_id": "12.2",
+      "intent": "additional_information"
+    }
+  },
+  {
+    "text": "In cases involving critical misconduct affecting campus safety, interim academic privileges may be restricted subject to preliminary findings and administrative approval.",
+    "metadata": {
+      "policy_id": "HED_GRS",
+      "section": "Critical Misconduct",
+      "clause_id": "7.2",
+      "intent": "critical_misconduct"
     }
   }
 ]
