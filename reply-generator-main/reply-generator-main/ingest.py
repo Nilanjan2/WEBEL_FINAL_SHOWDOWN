@@ -18,7 +18,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # ---------- EMBEDDER ----------
 embedder = SentenceTransformer(
-    "all-MiniLM-L6-v2",
+    "multi-qa-mpnet-base-dot-v1",
     device=device
 )
 
