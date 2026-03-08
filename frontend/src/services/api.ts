@@ -128,9 +128,7 @@ export async function fetchColleges(): Promise<string[]> {
 ============================ */
 
 export async function generateReply(
-  emailContent: string,
-  emailSubject: string = "",
-  sender: string = ""
+  emailContent: string
 ): Promise<string> {
   const response = await fetch(`${API_GENERATE_URL}/generate-reply`, {
     method: "POST",
@@ -138,9 +136,7 @@ export async function generateReply(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      email_content: emailContent,
-      email_subject: emailSubject,
-      sender,
+      email_text: emailContent
     }),
   });
 
