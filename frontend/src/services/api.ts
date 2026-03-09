@@ -132,7 +132,7 @@ export async function generateReply(
   emailSubject: string = "",
   sender: string = ""
 ): Promise<string> {
-  const response = await fetch(`${API_BASE_URL}/generate-reply`, {
+  const response = await fetch(`${API_GENERATE_URL}/generate-reply`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
